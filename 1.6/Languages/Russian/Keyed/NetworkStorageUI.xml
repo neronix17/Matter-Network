@@ -8,6 +8,7 @@
     <MN_NetworkStorageSubTabPower>Питание</MN_NetworkStorageSubTabPower>
     <MN_NetworkStorageSubTabByDef>По типам</MN_NetworkStorageSubTabByDef>
     <MN_NetworkStorageSubTabByStack>По стопкам</MN_NetworkStorageSubTabByStack>
+    <MN_NetworkStorageSubTabQuotas>Квоты</MN_NetworkStorageSubTabQuotas>
     <MN_NetworkStorageSearchLabel>Поиск:</MN_NetworkStorageSearchLabel>
     <MN_NetworkStorageNoNetwork>Нет подключения к сети</MN_NetworkStorageNoNetwork>
     <MN_NetworkStorageNoController>Нет активного контроллера</MN_NetworkStorageNoController>
@@ -49,6 +50,21 @@
     <MN_NetworkStorageOverviewTopDefsHeaderTotal>Всего</MN_NetworkStorageOverviewTopDefsHeaderTotal>
     <MN_NetworkStorageByDefSummary>{0} типов | {1} всего</MN_NetworkStorageByDefSummary>
     <MN_NetworkStorageByStackSummary>{0} хранимых стопок</MN_NetworkStorageByStackSummary>
+    <MN_NetworkStorageQuotaSummary>{0} типов</MN_NetworkStorageQuotaSummary>
+    <MN_NetworkStorageNoQuotaDefs>Нет хранимых типов, соответствующих фильтру квот.</MN_NetworkStorageNoQuotaDefs>
+    <MN_NetworkStorageQuotaModeAll>Все</MN_NetworkStorageQuotaModeAll>
+    <MN_NetworkStorageQuotaModeConfigured>Настроено</MN_NetworkStorageQuotaModeConfigured>
+    <MN_NetworkStorageQuotaModeStored>Хранится</MN_NetworkStorageQuotaModeStored>
+    <MN_NetworkStorageQuotaModeDisallowed>Запрещено</MN_NetworkStorageQuotaModeDisallowed>
+    <MN_NetworkStorageQuotaHeaderDef>Тип</MN_NetworkStorageQuotaHeaderDef>
+    <MN_NetworkStorageQuotaHeaderStored>Хранится</MN_NetworkStorageQuotaHeaderStored>
+    <MN_NetworkStorageQuotaHeaderMax>Макс.</MN_NetworkStorageQuotaHeaderMax>
+    <MN_NetworkStorageQuotaHeaderRemaining>Осталось</MN_NetworkStorageQuotaHeaderRemaining>
+    <MN_NetworkStorageQuotaHeaderStatus>Статус</MN_NetworkStorageQuotaHeaderStatus>
+    <MN_NetworkStorageQuotaUnlimited>Без лимита</MN_NetworkStorageQuotaUnlimited>
+    <MN_NetworkStorageQuotaClear>Сброс</MN_NetworkStorageQuotaClear>
+    <MN_NetworkStorageQuotaAllowed>Разрешено</MN_NetworkStorageQuotaAllowed>
+    <MN_NetworkStorageQuotaDisallowed>Фильтр</MN_NetworkStorageQuotaDisallowed>
     <MN_NetworkStorageTotalCount>Всего: {0}</MN_NetworkStorageTotalCount>
     <MN_NetworkStorageStackEntries>Стопок: {0}</MN_NetworkStorageStackEntries>
     <MN_NetworkStorageDropByDefTooltip>Выбросить одну порцию {0}. Эта группа содержит {1} хранимых стопок, всего {2} шт.</MN_NetworkStorageDropByDefTooltip>

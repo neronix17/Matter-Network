@@ -22,7 +22,7 @@ namespace SK_Matter_Network
             Dictionary<ThingDef, GroupedItemEntry> groupedMap = new Dictionary<ThingDef, GroupedItemEntry>();
             foreach (Thing thing in network.ActiveController.innerContainer.InnerListForReading)
             {
-                if (thing == null || thing.Destroyed)
+                if (thing.Destroyed)
                 {
                     continue;
                 }
@@ -85,6 +85,51 @@ namespace SK_Matter_Network
                 .ToList();
         }
 
+        internal List<QuotaItemEntry> BuildQuotaEntries(DataNetwork network, string searchText, NetworkStorageQuotaMode mode)
+        {
+            List<QuotaItemEntry> entries = new List<QuotaItemEntry>();
+            IReadOnlyDictionary<ThingDef, int> counts = network.ItemCountByDef;
+            string term = string.IsNullOrWhiteSpace(searchText) ? null : searchText.Trim();
+            HashSet<ThingDef> quotaDefs = new HashSet<ThingDef>();
+
+            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefsListForReading)
+            {
+                if (IsQuotaCandidate(network, def))
+                {
+                    quotaDefs.Add(def);
+                }
+            }
+
+            foreach (ThingDef def in network.ItemQuotaByDef.Keys)
+            {
+                quotaDefs.Add(def);
+            }
+
+            foreach (ThingDef def in quotaDefs)
+            {
+                if (term != null && !ContainsIgnoreCase(def.LabelCap, term) && !ContainsIgnoreCase(def.label, term) && !ContainsIgnoreCase(def.defName, term))
+                {
+                    continue;
+                }
+
+                counts.TryGetValue(def, out int storedCount);
+                bool hasQuota = network.TryGetItemQuota(def, out int quota);
+                bool allowed = network.StorageSettingsAllow(def);
+                int remaining = hasQuota ? network.RemainingQuotaFor(def) : int.MaxValue;
+
+                QuotaItemEntry entry = new QuotaItemEntry(def, storedCount, quota, hasQuota, allowed, remaining);
+                if (!QuotaModeAllows(entry, mode))
+                {
+                    continue;
+                }
+
+                entries.Add(entry);
+            }
+
+            entries.Sort(CompareQuotaEntries);
+            return entries;
+        }
+
         internal string BuildThingMetadata(Thing thing)
         {
             List<string> parts = new List<string>();
@@ -137,6 +182,47 @@ namespace SK_Matter_Network
             }
 
             return b.StackCount.CompareTo(a.StackCount);
+        }
+
+        private static int CompareQuotaEntries(QuotaItemEntry a, QuotaItemEntry b)
+        {
+            int labelCompare = string.Compare(a.Def.label, b.Def.label, StringComparison.OrdinalIgnoreCase);
+            if (labelCompare != 0)
+            {
+                return labelCompare;
+            }
+
+            return string.Compare(a.Def.defName, b.Def.defName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsQuotaCandidate(DataNetwork network, ThingDef def)
+        {
+            if (def.category != ThingCategory.Item)
+            {
+                return false;
+            }
+
+            if (!def.EverStorable(willMinifyIfPossible: false))
+            {
+                return false;
+            }
+
+            return network.FixedStorageSettingsAllow(def);
+        }
+
+        private static bool QuotaModeAllows(QuotaItemEntry entry, NetworkStorageQuotaMode mode)
+        {
+            switch (mode)
+            {
+                case NetworkStorageQuotaMode.Configured:
+                    return entry.HasConfiguredMax;
+                case NetworkStorageQuotaMode.Stored:
+                    return entry.StoredCount > 0;
+                case NetworkStorageQuotaMode.Disallowed:
+                    return !entry.CurrentlyAllowed;
+                default:
+                    return true;
+            }
         }
 
         private static bool ContainsIgnoreCase(string value, string term)

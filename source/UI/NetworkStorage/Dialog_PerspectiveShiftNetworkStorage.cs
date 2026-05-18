@@ -399,7 +399,7 @@ namespace SK_Matter_Network
                 return false;
             }
 
-            bool added = network.ActiveController.innerContainer.TryAdd(item, canMergeWithExistingStacks: true);
+            bool added = network.ActiveController.innerContainer.TryAddExistingNetworkItem(item, canMergeWithExistingStacks: true);
             if (added)
             {
                 network.MarkBytesDirty();
@@ -418,14 +418,13 @@ namespace SK_Matter_Network
                 return false;
             }
 
-            if (!network.AcceptsItem(item))
+            if (!network.StorageSettingsAllow(item))
             {
                 Messages.Message("MN_PSNetworkStorageDoesNotAccept".Translate(item.LabelCap), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
-            int available = Math.Max(0, network.TotalCapacityBytes - network.UsedBytes);
-            acceptedCount = Math.Min(Math.Min(requestedCount, item.stackCount), available);
+            acceptedCount = Math.Min(Math.Min(requestedCount, item.stackCount), network.CanAcceptCount(item));
             if (acceptedCount <= 0)
             {
                 Messages.Message("MN_PSNetworkStorageNoCapacity".Translate(item.LabelCap), MessageTypeDefOf.RejectInput, false);
@@ -584,15 +583,32 @@ namespace SK_Matter_Network
             }
 
             DataNetwork network = Network;
+            int requestedToMove = Math.Min(requestedCount, carried.stackCount);
             int moved = pawn.carryTracker.innerContainer.TryTransferToContainer(carried, network.ActiveController.innerContainer, acceptedCount);
             if (moved > 0)
             {
                 network.MarkBytesDirty();
+                DropCarriedOverflowAtInterface(requestedToMove - moved);
                 carried.def.soundDrop?.PlayOneShot(pawn);
                 return true;
             }
 
             return false;
+        }
+
+        private void DropCarriedOverflowAtInterface(int count)
+        {
+            if (count <= 0)
+            {
+                return;
+            }
+
+            Thing carried = pawn.carryTracker.CarriedThing;
+            int dropCount = Math.Min(count, carried.stackCount);
+            if (dropCount > 0)
+            {
+                pawn.carryTracker.TryDropCarriedThing(selectedInterface.Position, dropCount, ThingPlaceMode.Near, out Thing _);
+            }
         }
 
         private void ClearItemReservations(Thing item)

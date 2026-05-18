@@ -7,6 +7,8 @@ namespace SK_Matter_Network
 {
     public class DataNetwork : IExposable, ILoadReferenceable
     {
+        public const int MaxItemQuota = 9999999;
+
         private sealed class NetworkStorageSettingsParent : IStoreSettingsParent
         {
             private readonly DataNetwork network;
@@ -63,6 +65,7 @@ namespace SK_Matter_Network
 
         public HashSet<Thing> storedItems;
         private Dictionary<ThingDef, int> itemCountByDef;
+        private Dictionary<ThingDef, int> itemQuotaByDef;
         private int cachedUsedBytes;
         private int cachedTotalCapacityBytes;
         private bool bytesDirty = true;
@@ -143,6 +146,8 @@ namespace SK_Matter_Network
             }
         }
 
+        public IReadOnlyDictionary<ThingDef, int> ItemQuotaByDef => itemQuotaByDef;
+
         public Dictionary<ThingDef, int> ItemDefToStackCount
         {
             get
@@ -177,6 +182,7 @@ namespace SK_Matter_Network
             storageSettings = new StorageSettings(storageSettingsOwner);
             storedItems = new HashSet<Thing>();
             itemCountByDef = new Dictionary<ThingDef, int>();
+            itemQuotaByDef = new Dictionary<ThingDef, int>();
             power = new NetworkPowerState();
             power.Initialize(this);
         }
@@ -345,19 +351,119 @@ namespace SK_Matter_Network
 
         public bool CanAccept(Thing item)
         {
-            if (!IsOperational) return false;
-            if (!storageSettings.AllowedToAccept(item)) return false;
-            return UsedBytes + item.stackCount <= cachedTotalCapacityBytes;
+            return CanAcceptCount(item) > 0;
         }
 
         public int CanAcceptCount(Thing item)
         {
-            if (!IsOperational) return 0;
+            if (item.Destroyed || item.stackCount <= 0 || !IsOperational) return 0;
             if (!storageSettings.AllowedToAccept(item)) return 0;
-            return System.Math.Max(0, cachedTotalCapacityBytes - UsedBytes);
+            return RemainingStorageFor(item.def, cachedTotalCapacityBytes);
         }
 
-        public bool AcceptsItem(Thing item) => storageSettings.AllowedToAccept(item);
+        public int ControllerCanAcceptCount(Thing item)
+        {
+            if (item.Destroyed || item.stackCount <= 0 || !IsOperational) return 0;
+            if (!storageSettings.AllowedToAccept(item)) return 0;
+            return RemainingStorageFor(item.def, ControllerCapacityLimitForAdds);
+        }
+
+        public int SpaceRemainingFor(ThingDef def)
+        {
+            if (!IsOperational) return 0;
+            return RemainingStorageFor(def, cachedTotalCapacityBytes);
+        }
+
+        public bool AcceptsItem(Thing item) => CanAcceptCount(item) > 0;
+
+        public bool StorageSettingsAllow(Thing item) => storageSettings.AllowedToAccept(item);
+
+        public bool StorageSettingsAllow(ThingDef def) => storageSettings.AllowedToAccept(def);
+
+        public bool FixedStorageSettingsAllow(ThingDef def)
+        {
+            EnsureStorageSettingsOwner();
+            StorageSettings parentSettings = storageSettingsOwner.GetParentStoreSettings();
+            if (parentSettings != null)
+            {
+                return parentSettings.AllowedToAccept(def);
+            }
+
+            return def.category == ThingCategory.Item && def.EverStorable(willMinifyIfPossible: false);
+        }
+
+        public bool TryGetItemQuota(ThingDef def, out int quota)
+        {
+            return itemQuotaByDef.TryGetValue(def, out quota);
+        }
+
+        public void SetItemQuota(ThingDef def, int quota)
+        {
+            itemQuotaByDef[def] = ClampItemQuota(quota);
+            RefreshHaulRegistrations();
+            RefreshUI();
+        }
+
+        public void ClearItemQuota(ThingDef def)
+        {
+            if (itemQuotaByDef.Remove(def))
+            {
+                RefreshHaulRegistrations();
+                RefreshUI();
+            }
+        }
+
+        public int GetConfiguredItemQuotaOrUnlimited(ThingDef def)
+        {
+            if (itemQuotaByDef.TryGetValue(def, out int quota))
+            {
+                return quota;
+            }
+
+            return int.MaxValue;
+        }
+
+        public int RemainingQuotaFor(ThingDef def)
+        {
+            if (!itemQuotaByDef.TryGetValue(def, out int quota))
+            {
+                return int.MaxValue;
+            }
+
+            int storedCount = 0;
+            if (ItemCountByDef.TryGetValue(def, out int count))
+            {
+                storedCount = count;
+            }
+
+            return System.Math.Max(0, quota - storedCount);
+        }
+
+        public void MergeMissingQuotasFrom(DataNetwork other)
+        {
+            foreach (KeyValuePair<ThingDef, int> entry in other.itemQuotaByDef)
+            {
+                if (!itemQuotaByDef.ContainsKey(entry.Key))
+                {
+                    itemQuotaByDef.Add(entry.Key, ClampItemQuota(entry.Value));
+                }
+            }
+
+            RefreshHaulRegistrations();
+            RefreshUI();
+        }
+
+        public void CopyQuotasFrom(DataNetwork other)
+        {
+            itemQuotaByDef.Clear();
+            foreach (KeyValuePair<ThingDef, int> entry in other.itemQuotaByDef)
+            {
+                itemQuotaByDef[entry.Key] = ClampItemQuota(entry.Value);
+            }
+
+            RefreshHaulRegistrations();
+            RefreshUI();
+        }
 
         public bool ItemInNetwork(Thing item) => storedItems.Contains(item);
 
@@ -416,8 +522,7 @@ namespace SK_Matter_Network
 
         public bool WouldControllerAddExceedCapacity(Thing item)
         {
-            if (item == null) return true;
-            return UsedBytes + item.stackCount > ControllerCapacityLimitForAdds;
+            return ControllerCanAcceptCount(item) < item.stackCount;
         }
 
         public void AddBuilding(NetworkBuilding building)
@@ -865,7 +970,11 @@ namespace SK_Matter_Network
                 moving = source.SplitOff(count);
             }
 
-            if (to.TryAdd(moving, canMergeWithExistingStacks: true))
+            bool added = to is ControllerItemOwner controllerOwner
+                ? controllerOwner.TryAddExistingNetworkItem(moving, canMergeWithExistingStacks: true)
+                : to.TryAdd(moving, canMergeWithExistingStacks: true);
+
+            if (added)
                 return count;
 
             from.TryAdd(moving, canMergeWithExistingStacks: true);
@@ -956,6 +1065,7 @@ namespace SK_Matter_Network
             Scribe_Collections.Look(ref diskDrives, "diskDrives", LookMode.Reference);
             Scribe_Collections.Look(ref networkInterfaces, "networkInterfaces", LookMode.Reference);
             Scribe_Deep.Look(ref storageSettings, "storageSettings");
+            Scribe_Collections.Look(ref itemQuotaByDef, "itemQuotaByDef", LookMode.Def, LookMode.Value);
             Scribe_Values.Look(ref storageSettingsSeeded, "storageSettingsSeeded", false);
             Scribe_Deep.Look(ref power, "power");
             Scribe_References.Look(ref map, "map");
@@ -968,6 +1078,8 @@ namespace SK_Matter_Network
                 if (diskDrives == null) diskDrives = new List<NetworkBuildingDiskDrive>();
                 if (storedItems == null) storedItems = new HashSet<Thing>();
                 if (itemCountByDef == null) itemCountByDef = new Dictionary<ThingDef, int>();
+                if (itemQuotaByDef == null) itemQuotaByDef = new Dictionary<ThingDef, int>();
+                SanitizeItemQuotas();
                 EnsurePowerState();
 
                 PostLoadInit();
@@ -1186,6 +1298,46 @@ namespace SK_Matter_Network
         {
             if (currentTab != null)
                 currentTab.ItemsCached = false;
+        }
+
+        private int RemainingStorageFor(ThingDef def, int capacityLimit)
+        {
+            int remainingCapacity = System.Math.Max(0, capacityLimit - UsedBytes);
+            int remainingQuota = RemainingQuotaFor(def);
+            return System.Math.Min(remainingCapacity, remainingQuota);
+        }
+
+        private static int ClampItemQuota(int quota)
+        {
+            return UnityEngine.Mathf.Clamp(quota, 0, MaxItemQuota);
+        }
+
+        private void SanitizeItemQuotas()
+        {
+            if (itemQuotaByDef == null)
+            {
+                itemQuotaByDef = new Dictionary<ThingDef, int>();
+                return;
+            }
+
+            List<ThingDef> toRemove = new List<ThingDef>();
+            List<ThingDef> keys = itemQuotaByDef.Keys.ToList();
+            for (int i = 0; i < keys.Count; i++)
+            {
+                ThingDef def = keys[i];
+                if (def == null)
+                {
+                    toRemove.Add(def);
+                    continue;
+                }
+
+                itemQuotaByDef[def] = ClampItemQuota(itemQuotaByDef[def]);
+            }
+
+            for (int i = 0; i < toRemove.Count; i++)
+            {
+                itemQuotaByDef.Remove(toRemove[i]);
+            }
         }
 
         private void EnsurePowerState()

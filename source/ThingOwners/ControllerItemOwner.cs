@@ -6,6 +6,10 @@ namespace SK_Matter_Network
     public class ControllerItemOwner : ThingOwner<Thing>
     {
         private NetworkBuildingController ctrl;
+        private bool addingExistingNetworkItem;
+        private int lastTryAddAcceptedCount;
+
+        internal int LastTryAddAcceptedCount => lastTryAddAcceptedCount;
 
         public ControllerItemOwner() { }
 
@@ -20,18 +24,55 @@ namespace SK_Matter_Network
             ctrl = owner;
         }
 
-        public override bool TryAdd(Thing item, bool canMergeWithExistingStacks = true)
+        public override int GetCountCanAccept(Thing item, bool canMergeWithExistingStacks = true)
         {
-            if (item == null || item.Destroyed)
-                return false;
-
-            DataNetwork network = ctrl?.ParentNetwork;
-            if (network == null || network.WouldControllerAddExceedCapacity(item))
+            int baseCount = base.GetCountCanAccept(item, canMergeWithExistingStacks);
+            if (addingExistingNetworkItem)
             {
-                DropRejectedItem(item, network);
-                return false;
+                return baseCount;
             }
 
+            return System.Math.Min(baseCount, ctrl.ParentNetwork.ControllerCanAcceptCount(item));
+        }
+
+        internal bool TryAddExistingNetworkItem(Thing item, bool canMergeWithExistingStacks = true)
+        {
+            addingExistingNetworkItem = true;
+            try
+            {
+                return TryAdd(item, canMergeWithExistingStacks);
+            }
+            finally
+            {
+                addingExistingNetworkItem = false;
+            }
+        }
+
+        public override bool TryAdd(Thing item, bool canMergeWithExistingStacks = true)
+        {
+            lastTryAddAcceptedCount = 0;
+
+            if (item.Destroyed)
+                return false;
+
+            if (!addingExistingNetworkItem)
+            {
+                DataNetwork network = ctrl.ParentNetwork;
+                int acceptedCount = network.ControllerCanAcceptCount(item);
+                if (acceptedCount <= 0)
+                {
+                    return false;
+                }
+
+                if (acceptedCount < item.stackCount)
+                {
+                    Thing rejected = item.SplitOff(item.stackCount - acceptedCount);
+                    DropRejectedItem(rejected, network);
+                }
+            }
+
+            int countBeingAdded = item.stackCount;
+            DataNetwork parentNetwork = ctrl.ParentNetwork;
             if (canMergeWithExistingStacks)
             {
                 for (int i = 0; i < InnerListForReading.Count; i++)
@@ -43,7 +84,8 @@ namespace SK_Matter_Network
                     int absorbed = item.stackCount;
                     existing.TryAbsorbStack(item, respectStackLimit: false);
                     NotifyAddedAndMergedWith(existing, absorbed);
-                    network?.MarkBytesDirty();
+                    parentNetwork.MarkBytesDirty();
+                    lastTryAddAcceptedCount = absorbed;
                     return true;
                 }
             }
@@ -51,17 +93,15 @@ namespace SK_Matter_Network
             bool result = base.TryAdd(item, canMergeWithExistingStacks: false);
             if (result && !item.Destroyed && item.stackCount > 0)
             {
-                network?.storedItems.Add(item);
-                network?.MarkBytesDirty();
+                parentNetwork.storedItems.Add(item);
+                parentNetwork.MarkBytesDirty();
+                lastTryAddAcceptedCount = countBeingAdded;
             }
             return result;
         }
 
         private static bool CanMergeIntoNetworkStack(Thing existing, Thing item)
         {
-            if (existing?.def == null || item?.def == null)
-                return false;
-
             if (existing.def.stackLimit <= 1 || item.def.stackLimit <= 1)
                 return false;
 
@@ -88,24 +128,21 @@ namespace SK_Matter_Network
             float closestDistanceSquared = float.MaxValue;
             IntVec3 itemPosition = item.PositionHeld;
 
-            if (network?.NetworkInterfaces != null)
+            foreach (NetworkBuildingNetworkInterface networkInterface in network.NetworkInterfaces)
             {
-                foreach (NetworkBuildingNetworkInterface networkInterface in network.NetworkInterfaces)
+                float distanceSquared = (itemPosition - networkInterface.Position).LengthHorizontalSquared;
+                if (distanceSquared < closestDistanceSquared)
                 {
-                    float distanceSquared = (itemPosition - networkInterface.Position).LengthHorizontalSquared;
-                    if (distanceSquared < closestDistanceSquared)
-                    {
-                        closestInterface = networkInterface;
-                        closestDistanceSquared = distanceSquared;
-                    }
+                    closestInterface = networkInterface;
+                    closestDistanceSquared = distanceSquared;
                 }
+            }
 
-                if (closestInterface != null)
-                {
-                    dropCell = closestInterface.Position;
-                    map = closestInterface.Map;
-                    return true;
-                }
+            if (closestInterface != null)
+            {
+                dropCell = closestInterface.Position;
+                map = closestInterface.Map;
+                return true;
             }
 
             dropCell = ctrl.Position;

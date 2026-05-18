@@ -13,6 +13,7 @@ namespace SK_Matter_Network
         private readonly NetworkStorageOverviewDrawer overviewDrawer;
         private readonly NetworkStoragePowerDrawer powerDrawer;
         private readonly NetworkStorageItemsDrawer itemsDrawer;
+        private readonly NetworkStorageQuotasDrawer quotasDrawer;
 
         private NetworkBuilding oldSelected;
         private bool snapshotDirty = true;
@@ -36,6 +37,7 @@ namespace SK_Matter_Network
             overviewDrawer = new NetworkStorageOverviewDrawer(chromeDrawer, dataSource);
             powerDrawer = new NetworkStoragePowerDrawer(chromeDrawer, dataSource);
             itemsDrawer = new NetworkStorageItemsDrawer(chromeDrawer, dataSource, actions);
+            quotasDrawer = new NetworkStorageQuotasDrawer(chromeDrawer, dataSource);
         }
 
         protected override void FillTab()
@@ -92,6 +94,9 @@ namespace SK_Matter_Network
                 case NetworkStorageSubTab.ByStack:
                     itemsDrawer.DrawByStackTab(tabContentRect, network, snapshot, state, SelectedInterface);
                     break;
+                case NetworkStorageSubTab.Quotas:
+                    quotasDrawer.Draw(tabContentRect, network, state);
+                    break;
             }
         }
 
@@ -132,6 +137,7 @@ namespace SK_Matter_Network
             }
 
             snapshot = dataSource.BuildSnapshot(network);
+            state.InvalidateQuotaEntries();
             snapshotDirty = false;
         }
     }

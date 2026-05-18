@@ -191,14 +191,14 @@ namespace SK_Matter_Network.Patches
             Thing carried = pawn.carryTracker.CarriedThing;
             DataNetwork network = networkInterface.ParentNetwork;
 
-            if (!network.AcceptsItem(carried))
+            if (!network.StorageSettingsAllow(carried))
             {
                 Messages.Message("MN_PSNetworkStorageDoesNotAccept".Translate(carried.LabelCap), MessageTypeDefOf.RejectInput, false);
                 return false;
             }
 
-            int available = Math.Max(0, network.TotalCapacityBytes - network.UsedBytes);
-            int count = Math.Min(carried.stackCount, available);
+            int requestedCount = carried.stackCount;
+            int count = Math.Min(requestedCount, network.CanAcceptCount(carried));
             if (count <= 0)
             {
                 Messages.Message("MN_PSNetworkStorageNoCapacity".Translate(carried.LabelCap), MessageTypeDefOf.RejectInput, false);
@@ -212,8 +212,24 @@ namespace SK_Matter_Network.Patches
             }
 
             network.MarkBytesDirty();
+            DropCarriedOverflowAtInterface(pawn, networkInterface, requestedCount - moved);
             carried.def.soundDrop?.PlayOneShot(pawn);
             return true;
+        }
+
+        private static void DropCarriedOverflowAtInterface(Pawn pawn, NetworkBuildingNetworkInterface networkInterface, int count)
+        {
+            if (count <= 0)
+            {
+                return;
+            }
+
+            Thing carried = pawn.carryTracker.CarriedThing;
+            int dropCount = Math.Min(count, carried.stackCount);
+            if (dropCount > 0)
+            {
+                pawn.carryTracker.TryDropCarriedThing(networkInterface.Position, dropCount, ThingPlaceMode.Near, out Thing _);
+            }
         }
 
         private static bool RejectClick(Event current, ref bool result, NetworkBuildingNetworkInterface networkInterface)

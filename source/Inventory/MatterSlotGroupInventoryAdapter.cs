@@ -35,12 +35,12 @@ namespace SK_Matter_Network
 
         public bool CanPull(Thing thing, int count)
         {
-            return IsValid && thing != null && !thing.Destroyed && thing.Spawned && map.haulDestinationManager.SlotGroupAt(thing.Position) == slotGroup && count > 0;
+            return IsValid && !thing.Destroyed && thing.Spawned && map.haulDestinationManager.SlotGroupAt(thing.Position) == slotGroup && count > 0;
         }
 
         public int PullTo(Thing thing, int count, ThingOwner destination)
         {
-            if (!CanPull(thing, count) || destination == null)
+            if (!CanPull(thing, count))
             {
                 return 0;
             }
@@ -49,6 +49,11 @@ namespace SK_Matter_Network
             Thing moving = thing.SplitOff(moveCount);
             if (destination.TryAdd(moving, canMergeWithExistingStacks: true))
             {
+                if (destination is ControllerItemOwner controllerOwner)
+                {
+                    return controllerOwner.LastTryAddAcceptedCount;
+                }
+
                 return moveCount;
             }
 
@@ -58,7 +63,7 @@ namespace SK_Matter_Network
 
         public bool Accepts(Thing thing)
         {
-            if (!IsValid || thing == null || thing.Destroyed || !slotGroup.parent.Accepts(thing))
+            if (!IsValid || thing.Destroyed || !slotGroup.parent.Accepts(thing))
             {
                 return false;
             }
@@ -78,7 +83,7 @@ namespace SK_Matter_Network
 
         public int PushFrom(Thing thing, int count)
         {
-            if (!Accepts(thing) || count <= 0 || thing.holdingOwner == null)
+            if (!Accepts(thing) || count <= 0)
             {
                 return 0;
             }
@@ -143,7 +148,7 @@ namespace SK_Matter_Network
 
         private void RestoreToMapOrStack(Thing original, Thing moving)
         {
-            if (moving == null || moving.Destroyed)
+            if (moving.Destroyed)
             {
                 return;
             }

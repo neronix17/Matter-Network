@@ -8,7 +8,36 @@ namespace SK_Matter_Network
         Overview,
         Power,
         ByDef,
-        ByStack
+        ByStack,
+        Quotas
+    }
+
+    internal enum NetworkStorageQuotaMode
+    {
+        All,
+        Configured,
+        Stored,
+        Disallowed
+    }
+
+    internal struct QuotaItemEntry
+    {
+        public ThingDef Def;
+        public int StoredCount;
+        public int ConfiguredMax;
+        public bool HasConfiguredMax;
+        public bool CurrentlyAllowed;
+        public int Remaining;
+
+        public QuotaItemEntry(ThingDef def, int storedCount, int configuredMax, bool hasConfiguredMax, bool currentlyAllowed, int remaining)
+        {
+            Def = def;
+            StoredCount = storedCount;
+            ConfiguredMax = configuredMax;
+            HasConfiguredMax = hasConfiguredMax;
+            CurrentlyAllowed = currentlyAllowed;
+            Remaining = remaining;
+        }
     }
 
     internal struct GroupedItemEntry

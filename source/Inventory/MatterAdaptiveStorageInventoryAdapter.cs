@@ -56,12 +56,12 @@ namespace SK_Matter_Network
 
         public bool CanPull(Thing thing, int count)
         {
-            return IsValid && thing != null && !thing.Destroyed && count > 0 && ContainsStoredThing(thing);
+            return IsValid && !thing.Destroyed && count > 0 && ContainsStoredThing(thing);
         }
 
         public int PullTo(Thing thing, int count, ThingOwner destination)
         {
-            if (!CanPull(thing, count) || destination == null)
+            if (!CanPull(thing, count))
             {
                 return 0;
             }
@@ -92,6 +92,11 @@ namespace SK_Matter_Network
 
             if (destination.TryAdd(moving, canMergeWithExistingStacks: true))
             {
+                if (destination is ControllerItemOwner controllerOwner)
+                {
+                    return controllerOwner.LastTryAddAcceptedCount;
+                }
+
                 return moveCount;
             }
 
@@ -101,7 +106,7 @@ namespace SK_Matter_Network
 
         public bool Accepts(Thing thing)
         {
-            bool adaptiveAccepts = IsValid && thing != null && !thing.Destroyed && AdaptiveStorageAccepts(thing);
+            bool adaptiveAccepts = IsValid && !thing.Destroyed && AdaptiveStorageAccepts(thing);
             bool result = adaptiveAccepts && TryFindStoreCell(thing, out IntVec3 _);
             return result;
         }
@@ -118,7 +123,7 @@ namespace SK_Matter_Network
 
         public int PushFrom(Thing thing, int count)
         {
-            if (!Accepts(thing) || count <= 0 || thing.holdingOwner == null)
+            if (!Accepts(thing) || count <= 0)
             {
                 return 0;
             }

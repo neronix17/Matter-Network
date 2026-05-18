@@ -8,6 +8,7 @@
     <MN_NetworkStorageSubTabPower>Power</MN_NetworkStorageSubTabPower>
     <MN_NetworkStorageSubTabByDef>Items By Def</MN_NetworkStorageSubTabByDef>
     <MN_NetworkStorageSubTabByStack>Stored Stacks</MN_NetworkStorageSubTabByStack>
+    <MN_NetworkStorageSubTabQuotas>Quotas</MN_NetworkStorageSubTabQuotas>
     <MN_NetworkStorageSearchLabel>Search:</MN_NetworkStorageSearchLabel>
     <MN_NetworkStorageNoNetwork>No network connected</MN_NetworkStorageNoNetwork>
     <MN_NetworkStorageNoController>No active controller</MN_NetworkStorageNoController>
@@ -45,6 +46,21 @@
     <MN_NetworkStorageOverviewTopDefsHeaderTotal>Total</MN_NetworkStorageOverviewTopDefsHeaderTotal>
     <MN_NetworkStorageByDefSummary>{0} defs | {1} total</MN_NetworkStorageByDefSummary>
     <MN_NetworkStorageByStackSummary>{0} stored stacks</MN_NetworkStorageByStackSummary>
+    <MN_NetworkStorageQuotaSummary>{0} defs</MN_NetworkStorageQuotaSummary>
+    <MN_NetworkStorageNoQuotaDefs>No storable defs match the current quota filter.</MN_NetworkStorageNoQuotaDefs>
+    <MN_NetworkStorageQuotaModeAll>All</MN_NetworkStorageQuotaModeAll>
+    <MN_NetworkStorageQuotaModeConfigured>Configured</MN_NetworkStorageQuotaModeConfigured>
+    <MN_NetworkStorageQuotaModeStored>Stored</MN_NetworkStorageQuotaModeStored>
+    <MN_NetworkStorageQuotaModeDisallowed>Disallowed</MN_NetworkStorageQuotaModeDisallowed>
+    <MN_NetworkStorageQuotaHeaderDef>Def</MN_NetworkStorageQuotaHeaderDef>
+    <MN_NetworkStorageQuotaHeaderStored>Stored</MN_NetworkStorageQuotaHeaderStored>
+    <MN_NetworkStorageQuotaHeaderMax>Max</MN_NetworkStorageQuotaHeaderMax>
+    <MN_NetworkStorageQuotaHeaderRemaining>Remaining</MN_NetworkStorageQuotaHeaderRemaining>
+    <MN_NetworkStorageQuotaHeaderStatus>Status</MN_NetworkStorageQuotaHeaderStatus>
+    <MN_NetworkStorageQuotaUnlimited>Unlimited</MN_NetworkStorageQuotaUnlimited>
+    <MN_NetworkStorageQuotaClear>Clear</MN_NetworkStorageQuotaClear>
+    <MN_NetworkStorageQuotaAllowed>Allowed</MN_NetworkStorageQuotaAllowed>
+    <MN_NetworkStorageQuotaDisallowed>Filtered</MN_NetworkStorageQuotaDisallowed>
     <MN_NetworkStorageTotalCount>Total: {0}</MN_NetworkStorageTotalCount>
     <MN_NetworkStorageStackEntries>{0} stacks</MN_NetworkStorageStackEntries>
     <MN_NetworkStorageDropByDefTooltip>Drop one chunk of {0}. This grouped entry covers {1} stored stacks for a total of {2}.</MN_NetworkStorageDropByDefTooltip>

@@ -178,6 +178,7 @@
         <statBases>
             <MaxHitPoints>200</MaxHitPoints>
             <WorkToBuild>500</WorkToBuild>
+            <Mass>12</Mass>
             <StyleDominance MayRequire="Ludeon.RimWorld.Ideology">5</StyleDominance>
             <Flammability>0.5</Flammability>
             <Beauty>-1</Beauty>
@@ -208,6 +209,8 @@
                         <li>MN_Disk2k</li>
                         <li>MN_Disk4k</li>
                         <li>MN_Disk8k</li>
+                        <li>MN_Disk16k</li>
+                        <li>MN_Disk32k</li>
                     </disallowedThingDefs>
                 </filter>
             </fixedStorageSettings>
@@ -232,6 +235,10 @@
             <destroySound>BuildingDestroyed_Metal_Small</destroySound>
         </building>
         <altitudeLayer>Building</altitudeLayer>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <thingCategories>
+            <li>BuildingsMisc</li>
+        </thingCategories>
         <passability>PassThroughOnly</passability>
         <fillPercent>0.4</fillPercent>
         <pathCost>50</pathCost>
@@ -284,11 +291,16 @@
             </shadowData>
         </graphicData>
         <altitudeLayer>Building</altitudeLayer>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <thingCategories>
+            <li>BuildingsMisc</li>
+        </thingCategories>
         <passability>PassThroughOnly</passability>
         <fillPercent>0.2</fillPercent>
         <statBases>
             <MaxHitPoints>400</MaxHitPoints>
             <WorkToBuild>2000</WorkToBuild>
+            <Mass>18</Mass>
             <Flammability>0.5</Flammability>
         </statBases>
         <size>(1,1)</size>
@@ -309,6 +321,8 @@
                         <li>MN_Disk2k</li>
                         <li>MN_Disk4k</li>
                         <li>MN_Disk8k</li>
+                        <li>MN_Disk16k</li>
+                        <li>MN_Disk32k</li>
                     </disallowedThingDefs>
                 </filter>
             </fixedStorageSettings>

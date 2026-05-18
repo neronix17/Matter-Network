@@ -84,7 +84,7 @@ namespace SK_Matter_Network
         public int SpaceRemainingFor(ThingDef def)
         {
             if (ParentNetwork == null || !ParentNetwork.IsOperational) return 0;
-            return System.Math.Max(0, ParentNetwork.TotalCapacityBytes - ParentNetwork.UsedBytes);
+            return ParentNetwork.SpaceRemainingFor(def);
         }
 
         public void Notify_SettingsChanged()

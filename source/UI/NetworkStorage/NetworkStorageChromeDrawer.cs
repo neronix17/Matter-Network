@@ -44,10 +44,11 @@ namespace SK_Matter_Network
                 new TabRecord("MN_NetworkStorageSubTabOverview".Translate(), delegate { currentTab = NetworkStorageSubTab.Overview; }, selectedSubTab == NetworkStorageSubTab.Overview),
                 new TabRecord("MN_NetworkStorageSubTabPower".Translate(), delegate { currentTab = NetworkStorageSubTab.Power; }, selectedSubTab == NetworkStorageSubTab.Power),
                 new TabRecord("MN_NetworkStorageSubTabByDef".Translate(), delegate { currentTab = NetworkStorageSubTab.ByDef; }, selectedSubTab == NetworkStorageSubTab.ByDef),
-                new TabRecord("MN_NetworkStorageSubTabByStack".Translate(), delegate { currentTab = NetworkStorageSubTab.ByStack; }, selectedSubTab == NetworkStorageSubTab.ByStack)
+                new TabRecord("MN_NetworkStorageSubTabByStack".Translate(), delegate { currentTab = NetworkStorageSubTab.ByStack; }, selectedSubTab == NetworkStorageSubTab.ByStack),
+                new TabRecord("MN_NetworkStorageSubTabQuotas".Translate(), delegate { currentTab = NetworkStorageSubTab.Quotas; }, selectedSubTab == NetworkStorageSubTab.Quotas)
             };
 
-            TabDrawer.DrawTabs(tabContentRect, tabs, 180f);
+            TabDrawer.DrawTabs(tabContentRect, tabs, 160f);
             return currentTab;
         }
 
@@ -144,7 +145,7 @@ namespace SK_Matter_Network
 
         internal void DrawThingDefIcon(Rect rect, ThingDef thingDef)
         {
-            Widgets.DefIcon(rect, thingDef);
+            Widgets.DefIcon(rect, IconDefFor(thingDef));
             Widgets.DrawBoxSolidWithOutline(rect, Color.clear, NetworkStorageUiConstants.OutlineColor);
         }
 
@@ -152,6 +153,13 @@ namespace SK_Matter_Network
         {
             Widgets.ThingIcon(rect, thing);
             Widgets.DrawBoxSolidWithOutline(rect, Color.clear, NetworkStorageUiConstants.OutlineColor);
+        }
+
+        private static ThingDef IconDefFor(ThingDef thingDef)
+        {
+            return thingDef.IsCorpse && thingDef.ingestible?.sourceDef != null
+                ? thingDef.ingestible.sourceDef
+                : thingDef;
         }
 
         internal void DrawCenteredMessage(Rect rect, string message, GameFont font = GameFont.Medium, Color? color = null)

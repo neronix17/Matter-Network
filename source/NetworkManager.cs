@@ -101,6 +101,7 @@ namespace SK_Matter_Network
                 Logger.Message($"Network {network.NetworkId} split into {connectedGroups.Count} groups");
 
                 float reserveEnergyBeforeSplit = network.StoredReserveEnergyWd;
+                DataNetwork quotaSource = network;
                 List<NetworkBuilding> firstGroup = SelectGroupToKeep(network, connectedGroups);
                 List<List<NetworkBuilding>> groupsToSplit = connectedGroups.Where(group => group != firstGroup).ToList();
                 List<NetworkBuilding> buildingsToMove = network.Buildings.Where(b => !firstGroup.Contains(b)).ToList();
@@ -115,6 +116,7 @@ namespace SK_Matter_Network
                 for (int i = 0; i < groupsToSplit.Count; i++)
                 {
                     DataNetwork newNetwork = new DataNetwork(mapComp.map);
+                    newNetwork.CopyQuotasFrom(quotaSource);
                     foreach (NetworkBuilding b in groupsToSplit[i])
                         newNetwork.AddBuilding(b);
                     newNetwork.ValidateControllerConflicts();
@@ -161,6 +163,7 @@ namespace SK_Matter_Network
         private static void MergeNetworks(DataNetwork primary, DataNetwork toMerge, NetworksMapComponent mapComp)
         {
             float reserveEnergyToTransfer = toMerge.StoredReserveEnergyWd;
+            primary.MergeMissingQuotasFrom(toMerge);
             List<NetworkBuilding> toTransfer = toMerge.Buildings.ToList();
             foreach (NetworkBuilding b in toTransfer)
             {
