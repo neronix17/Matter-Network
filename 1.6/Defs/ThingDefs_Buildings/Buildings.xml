@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+
     <ThingDef ParentName="BuildingBase">
         <defName>MN_NetworkCable</defName>
         <label>network cable</label>
@@ -116,6 +117,7 @@
                         <li>MN_Disk8k</li>
                         <li>MN_Disk16k</li>
                         <li>MN_Disk32k</li>
+                        <li>MN_Disk256k</li>
                     </thingDefs>
                 </filter>
             </fixedStorageSettings>
@@ -129,6 +131,7 @@
                         <li>MN_Disk8k</li>
                         <li>MN_Disk16k</li>
                         <li>MN_Disk32k</li>
+                        <li>MN_Disk256k</li>
                     </thingDefs>
                 </filter>
             </defaultStorageSettings>
@@ -170,9 +173,9 @@
         <label>network interface</label>
         <description>A storage access point for a data network. Pawns can upload and extract allowed items here when the network has an active controller, and the selected storage filter is shared across the network.</description>
         <graphicData>
-            <texPath>Things/Building/SpacerProps/SingleDisplay/SingleDisplay</texPath>
+            <texPath>MatterNetwork/Things/Building/Terminal</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(1.2,1.2)</drawSize>
+            <drawSize>(1, 1)</drawSize>
             <shaderType>CutoutComplex</shaderType>
             <shadowData>
                 <volume>(0.3, 0.30, 0.40)</volume>
@@ -216,6 +219,7 @@
                         <li>MN_Disk8k</li>
                         <li>MN_Disk16k</li>
                         <li>MN_Disk32k</li>
+                        <li>MN_Disk256k</li>
                     </disallowedThingDefs>
                 </filter>
             </fixedStorageSettings>
@@ -683,4 +687,5 @@
         <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
         <specialDisplayRadius>7.9</specialDisplayRadius>
     </ThingDef>
+
 </Defs>
