@@ -69,7 +69,7 @@
         <researchPrerequisites>
             <li>MN_MatterNetwork</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <uiOrder>2000</uiOrder>
         <constructEffect>ConstructMetal</constructEffect>
         <clearBuildingArea>false</clearBuildingArea>
@@ -159,7 +159,7 @@
             <li>MN_MatterNetwork</li>
         </researchPrerequisites>
         <uiOrder>2050</uiOrder>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <preventDroppingThingsOn>true</preventDroppingThingsOn>
         <defaultPlacingRot>South</defaultPlacingRot>
         <uiIconScale>0.8</uiIconScale>
@@ -264,7 +264,7 @@
             <li>MN_MatterNetwork</li>
         </researchPrerequisites>
         <uiOrder>2050</uiOrder>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <preventDroppingThingsOn>true</preventDroppingThingsOn>
         <hasInteractionCell>true</hasInteractionCell>
         <interactionCellOffset>(0,0,1)</interactionCellOffset>
@@ -347,7 +347,7 @@
         <researchPrerequisites>
             <li>MN_MatterNetwork</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <defaultPlacingRot>South</defaultPlacingRot>
         <uiIconScale>1</uiIconScale>
     </ThingDef>
@@ -446,7 +446,7 @@
         <researchPrerequisites>
             <li>MN_NetworkIO</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <defaultPlacingRot>North</defaultPlacingRot>
         <rotatable>false</rotatable>
         <uiIconScale>1</uiIconScale>
@@ -501,7 +501,7 @@
         <researchPrerequisites>
             <li>MN_NetworkPowerStorage</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <defaultPlacingRot>North</defaultPlacingRot>
         <rotatable>false</rotatable>
         <uiIconScale>1</uiIconScale>
@@ -558,7 +558,7 @@
         <researchPrerequisites>
             <li>MN_NetworkPowerStorage</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <defaultPlacingRot>North</defaultPlacingRot>
         <rotatable>false</rotatable>
         <uiIconScale>1</uiIconScale>
@@ -618,7 +618,7 @@
         <researchPrerequisites>
             <li>MN_NetworkRefueling</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <defaultPlacingRot>North</defaultPlacingRot>
         <rotatable>false</rotatable>
         <uiIconScale>1</uiIconScale>
@@ -680,7 +680,7 @@
         <researchPrerequisites>
             <li>MN_NetworkRefueling</li>
         </researchPrerequisites>
-        <designationCategory>Misc</designationCategory>
+        <designationCategory>MN_MatterNetwork</designationCategory>
         <defaultPlacingRot>North</defaultPlacingRot>
         <rotatable>false</rotatable>
         <uiIconScale>1</uiIconScale>
