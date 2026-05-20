@@ -110,29 +110,17 @@
             <storageGroupTag>DiskDrive</storageGroupTag>
             <fixedStorageSettings>
                 <filter>
-                    <thingDefs>
-                        <li>MN_Disk1k</li>
-                        <li>MN_Disk2k</li>
-                        <li>MN_Disk4k</li>
-                        <li>MN_Disk8k</li>
-                        <li>MN_Disk16k</li>
-                        <li>MN_Disk32k</li>
-                        <li>MN_Disk256k</li>
-                    </thingDefs>
+                    <categories>
+                        <li>MN_Disks</li>
+                    </categories>
                 </filter>
             </fixedStorageSettings>
             <defaultStorageSettings>
                 <priority>Preferred</priority>
                 <filter>
-                    <thingDefs>
-                        <li>MN_Disk1k</li>
-                        <li>MN_Disk2k</li>
-                        <li>MN_Disk4k</li>
-                        <li>MN_Disk8k</li>
-                        <li>MN_Disk16k</li>
-                        <li>MN_Disk32k</li>
-                        <li>MN_Disk256k</li>
-                    </thingDefs>
+                    <categories>
+                        <li>MN_Disks</li>
+                    </categories>
                 </filter>
             </defaultStorageSettings>
             <preventDeteriorationOnTop>true</preventDeteriorationOnTop>
@@ -211,6 +199,7 @@
                     <disallowedCategories>
                         <li>Animals</li>
                         <li>Plants</li>
+                        <li>MN_Disks</li>
                     </disallowedCategories>
                     <disallowedThingDefs>
                         <li>MN_Disk1k</li>
@@ -326,13 +315,7 @@
                         <li>Root</li>
                     </categories>
                     <disallowedThingDefs>
-                        <li>MN_Disk1k</li>
-                        <li>MN_Disk2k</li>
-                        <li>MN_Disk4k</li>
-                        <li>MN_Disk8k</li>
-                        <li>MN_Disk16k</li>
-                        <li>MN_Disk32k</li>
-                        <li>MN_Disk256k</li>
+                        <li>MN_Disks</li>
                     </disallowedThingDefs>
                 </filter>
             </fixedStorageSettings>
@@ -402,15 +385,8 @@
                     <disallowedCategories>
                         <li>Animals</li>
                         <li>Plants</li>
+                        <li>MN_Disks</li>
                     </disallowedCategories>
-                    <disallowedThingDefs>
-                        <li>MN_Disk1k</li>
-                        <li>MN_Disk2k</li>
-                        <li>MN_Disk4k</li>
-                        <li>MN_Disk8k</li>
-                        <li>MN_Disk16k</li>
-                        <li>MN_Disk32k</li>
-                    </disallowedThingDefs>
                 </filter>
             </fixedStorageSettings>
             <defaultStorageSettings>

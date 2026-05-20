@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+
+    <ThingCategoryDef>
+        <defName>MN_Disks</defName>
+        <label>storage disks</label>
+        <parent>ItemsMisc</parent>
+    </ThingCategoryDef>
+
     <ThingDef Name="DiskBase" Abstract="True">
         <thingClass>ThingWithComps</thingClass>
         <category>Item</category>
@@ -26,11 +33,11 @@
             <DeteriorationRate>2.0</DeteriorationRate>
         </statBases>
         <thingCategories>
-            <li>ItemsMisc</li>
+            <li>MN_Disks</li>
         </thingCategories>
-        <researchPrerequisites>
-            <li>MN_MatterNetwork</li>
-        </researchPrerequisites>
+    </ThingDef>
+
+    <ThingDef Name="CraftableDiskBase" Abstract="True">
         <recipeMaker>
             <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
             <workSkill>Crafting</workSkill>
@@ -43,9 +50,12 @@
             </recipeUsers>
             <workAmount>18000</workAmount>
         </recipeMaker>
+        <researchPrerequisites>
+            <li>MN_MatterNetwork</li>
+        </researchPrerequisites>
     </ThingDef>
 
-    <ThingDef ParentName="DiskBase">
+    <ThingDef ParentName="CraftableDiskBase">
         <defName>MN_Disk1k</defName>
         <label>1k disk</label>
         <description>A data storage disk that can hold up to 1024 bytes of information. Each stored item consumes 1 byte per unit.</description>
@@ -70,7 +80,7 @@
         </costList>
     </ThingDef>
 
-    <ThingDef ParentName="DiskBase">
+    <ThingDef ParentName="CraftableDiskBase">
         <defName>MN_Disk2k</defName>
         <label>2k disk</label>
         <description>A data storage disk that can hold up to 2048 bytes of information. Each stored item consumes 1 byte per unit.</description>
@@ -95,7 +105,7 @@
         </costList>
     </ThingDef>
 
-    <ThingDef ParentName="DiskBase">
+    <ThingDef ParentName="CraftableDiskBase">
         <defName>MN_Disk4k</defName>
         <label>4k disk</label>
         <description>A data storage disk that can hold up to 4096 bytes of information. Each stored item consumes 1 byte per unit.</description>
@@ -120,7 +130,7 @@
         </costList>
     </ThingDef>
 
-    <ThingDef ParentName="DiskBase">
+    <ThingDef ParentName="CraftableDiskBase">
         <defName>MN_Disk8k</defName>
         <label>8k disk</label>
         <description>A data storage disk that can hold up to 8192 bytes of information. Each stored item consumes 1 byte per unit.</description>
@@ -145,7 +155,7 @@
         </costList>
     </ThingDef>
 
-    <ThingDef ParentName="DiskBase">
+    <ThingDef ParentName="CraftableDiskBase">
         <defName>MN_Disk16k</defName>
         <label>16k disk</label>
         <description>A data storage disk that can hold up to 16384 bytes of information. Each stored item consumes 1 byte per unit.</description>
@@ -170,7 +180,7 @@
         </costList>
     </ThingDef>
 
-    <ThingDef ParentName="DiskBase">
+    <ThingDef ParentName="CraftableDiskBase">
         <defName>MN_Disk32k</defName>
         <label>32k disk</label>
         <description>A data storage disk that can hold up to 32768 bytes of information. Each stored item consumes 1 byte per unit.</description>
