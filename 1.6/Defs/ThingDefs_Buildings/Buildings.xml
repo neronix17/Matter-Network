@@ -80,7 +80,7 @@
         <label>disk drive</label>
         <description>Holds matter disks that provide storage capacity to a connected data network. Can hold up to 6 disks. Add more drives or larger disks to increase how much the network can store.</description>
         <graphicData>
-            <texPath>MatterNetwork/Things/Building/DiskDrive</texPath>
+            <texPath>MatterNetwork/Things/Building/DiskDriveFull</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(3, 3)</drawSize>
             <shaderType>CutoutComplex</shaderType>
