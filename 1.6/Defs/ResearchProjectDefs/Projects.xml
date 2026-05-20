@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+
     <ResearchTabDef>
         <defName>MN_MatterNetworkTab</defName>
         <label>Matter Network</label>
@@ -109,4 +110,5 @@
             </rulesStrings>
         </generalRules>
     </ResearchProjectDef>
+    
 </Defs>
