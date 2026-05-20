@@ -267,8 +267,7 @@
         <designationCategory>MN_MatterNetwork</designationCategory>
         <preventDroppingThingsOn>true</preventDroppingThingsOn>
         <hasInteractionCell>true</hasInteractionCell>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
-        <defaultPlacingRot>South</defaultPlacingRot>
+        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
         <uiIconScale>0.8</uiIconScale>
     </ThingDef>
 
@@ -350,7 +349,6 @@
             <li>MN_MatterNetwork</li>
         </researchPrerequisites>
         <designationCategory>MN_MatterNetwork</designationCategory>
-        <defaultPlacingRot>South</defaultPlacingRot>
         <uiIconScale>1</uiIconScale>
     </ThingDef>
 
