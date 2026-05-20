@@ -7,3 +7,5 @@ All rights remain as they were, besides the replaced textures, which are exclusi
 - Added Archeotech Disk (256k) as a quest reward/exotic good
 - Separated into a new Architect Category
 - Controller is now 3x3 (1x1 texture exists, might make the 1x1 a GravShip specific thing)
+
+![image](https://github.com/neronix17/Matter-Network/blob/main/Preview.png?raw=true)
