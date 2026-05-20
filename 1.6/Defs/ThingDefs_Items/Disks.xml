@@ -37,7 +37,7 @@
         </thingCategories>
     </ThingDef>
 
-    <ThingDef Name="CraftableDiskBase" Abstract="True">
+    <ThingDef ParentName="DiskBase" Name="CraftableDiskBase" Abstract="True">
         <recipeMaker>
             <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
             <workSkill>Crafting</workSkill>

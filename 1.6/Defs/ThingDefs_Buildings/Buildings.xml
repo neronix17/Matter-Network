@@ -314,9 +314,9 @@
                     <categories>
                         <li>Root</li>
                     </categories>
-                    <disallowedThingDefs>
+                    <disallowedCategories>
                         <li>MN_Disks</li>
-                    </disallowedThingDefs>
+                    </disallowedCategories>
                 </filter>
             </fixedStorageSettings>
             <destroySound>BuildingDestroyed_Metal_Small</destroySound>
